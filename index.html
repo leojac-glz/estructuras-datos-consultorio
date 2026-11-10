@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión Médica - Estructuras de Datos</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen p-4 md:p-8">
+
+    <div class="max-w-6xl mx-auto space-y-8">
+        
+        <!-- ENCABEZADO -->
+        <header class="text-center space-y-2">
+            <div class="inline-flex items-center gap-2 bg-slate-200 px-3 py-1 rounded-full text-xs font-semibold text-slate-700">
+                🏥 Caso de Estudio Aplicado
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-800">Sistema de Control de Consultorio Médico</h1>
+            <p class="text-slate-500 text-sm md:text-base">Demostración práctica de Colas (Sala de espera), Pilas (Expedientes) y Arrays (Registro)</p>
+        </header>
+
+        <!-- SECCIÓN PRINCIPAL: 3 ESTRUCTURAS -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            <!-- 1. COLA: SALA DE ESPERA (FIFO) -->
+            <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between border-b pb-2 mb-2">
+                        <h2 class="text-lg font-bold text-emerald-800">1. Sala de Espera</h2>
+                        <span class="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-mono font-semibold">COLA (FIFO)</span>
+                    </div>
+                    <p class="text-xs text-slate-400 mb-4">Los pacientes son atendidos en orden de llegada.</p>
+
+                    <div class="space-y-3 mb-6">
+                        <input type="text" id="queue-input" placeholder="Nombre del paciente..." class="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400">
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="registrarLlegada()" class="bg-emerald-700 hover:bg-emerald-800 text-white py-2 rounded-md text-xs font-medium transition">➕ Registrar Llegada</button>
+                            <button onclick="atenderPaciente()" class="bg-amber-600 hover:bg-amber-700 text-white py-2 rounded-md text-xs font-medium transition">🩺 Atender Paciente</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Fila de Espera (Turno &larr; Llegada)</h3>
+                    <div id="queue-container" class="flex flex-row-reverse gap-2 p-3 bg-slate-50 rounded-lg border border-slate-100 min-h-[120px] items-center overflow-x-auto">
+                        <span class="text-xs text-slate-400 w-full text-center">No hay pacientes esperando</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. PILA: EXPEDIENTES / RECETAS (LIFO) -->
+            <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between border-b pb-2 mb-2">
+                        <h2 class="text-lg font-bold text-indigo-800">2. Módulo de Consultas</h2>
+                        <span class="text-[10px] bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded font-mono font-semibold">PILA (LIFO)</span>
+                    </div>
+                    <p class="text-xs text-slate-400 mb-4">Pila de expedientes generados en el escritorio del doctor.</p>
+
+                    <div class="space-y-3 mb-6">
+                        <input type="text" id="stack-input" placeholder="Diagnóstico / Receta..." class="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="guardarConsulta()" class="bg-indigo-700 hover:bg-indigo-800 text-white py-2 rounded-md text-xs font-medium transition">📥 Guardar Receta</button>
+                            <button onclick="archivarConsulta()" class="bg-rose-600 hover:bg-rose-700 text-white py-2 rounded-md text-xs font-medium transition">📁 Archivar Última</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Pila en Escritorio (Tope arriba)</h3>
+                    <div id="stack-container" class="flex flex-col-reverse gap-2 p-3 bg-slate-50 rounded-lg border border-slate-100 min-h-[160px] justify-start">
+                        <span class="text-xs text-slate-400 w-full text-center my-auto">Sin recetas en escritorio</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. ARRAY: REGISTRO HISTÓRICO -->
+            <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between border-b pb-2 mb-2">
+                        <h2 class="text-lg font-bold text-slate-800">3. Censo General</h2>
+                        <span class="text-[10px] bg-slate-200 text-slate-700 px-2 py-0.5 rounded font-mono font-semibold">ARRAY</span>
+                    </div>
+                    <p class="text-xs text-slate-400 mb-4">Lista indexada global de todos los pacientes atendidos.</p>
+
+                    <div class="space-y-3 mb-6">
+                        <input type="text" id="array-input" placeholder="Filtro o nombre directo..." class="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-slate-400">
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="registrarDirecto()" class="bg-slate-700 hover:bg-slate-800 text-white py-2 rounded-md text-xs font-medium transition">📝 Registrar Directo</button>
+                            <button onclick="eliminarUltimoRegistro()" class="bg-rose-600 hover:bg-rose-700 text-white py-2 rounded-md text-xs font-medium transition">🗑️ Cancelar Registro</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Índice del Censo (Acceso por posición)</h3>
+                    <div id="array-container" class="flex flex-wrap gap-2 p-3 bg-slate-50 rounded-lg border border-slate-100 min-h-[120px] items-center">
+                        <span class="text-xs text-slate-400 w-full text-center">Censo vacío</span>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- CONSOLA DE HISTORIAL Y EVENTOS -->
+        <section class="bg-slate-900 text-slate-200 rounded-xl p-5 shadow-inner">
+            <div class="flex justify-between items-center mb-3 border-b border-slate-700 pb-2">
+                <h3 class="text-sm font-semibold tracking-wide text-slate-300">📟 Bitácora de Operaciones del Consultorio</h3>
+                <button onclick="limpiarBitacora()" class="text-xs text-slate-400 hover:text-rose-400 transition">Limpiar bitácora</button>
+            </div>
+            <div id="log-container" class="font-mono text-xs space-y-1 max-h-40 overflow-y-auto pr-2">
+                <p class="text-slate-500">> Consultorio médico abierto. Esperando pacientes...</p>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- LÓGICA JAVASCRIPT -->
+    <script>
+        // ESTRUCTURAS DE DATOS
+        let salaDeEspera = []; // Cola (Queue)
+        let escritorioDoctor = []; // Pila (Stack)
+        let censoPacientes = []; // Array (Lista)
+
+        // FUNCIÓN REGISTRO EN BITÁCORA
+        function registrarLog(mensaje) {
+            const container = document.getElementById('log-container');
+            const tiempo = new Date().toLocaleTimeString();
+            const nuevoLog = document.createElement('p');
+            nuevoLog.className = 'fade-in';
+            nuevoLog.innerHTML = `<span class="text-slate-500">[${tiempo}]</span> ${mensaje}`;
+            container.appendChild(nuevoLog);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function limpiarBitacora() {
+            document.getElementById('log-container').innerHTML = '<p class="text-slate-500">> Bitácora reiniciada.</p>';
+        }
+
+        // --- 1. LÓGICA DE COLA (SALA DE ESPERA) ---
+        function registrarLlegada() {
+            const input = document.getElementById('queue-input');
+            const paciente = input.value.trim();
+            if (!paciente) return;
+
+            salaDeEspera.push(paciente); // Encolar
+            input.value = '';
+            registrarLog(`<span class="text-emerald-400">SALA ESPERA (Enqueue):</span> Se registró el turno para el paciente <b>"${paciente}"</b>.`);
+            renderCola();
+        }
+
+        function atenderPaciente() {
+            if (salaDeEspera.length === 0) {
+                registrarLog(`<span class="text-rose-400">ALERTA:</span> No hay pacientes esperando en la sala.`);
+                return;
+            }
+            const pacienteAtendido = salaDeEspera.shift(); // Desencolar (FIFO)
+            censoPacientes.push(pacienteAtendido); // Agregar automáticamente al registro general
+            
+            registrarLog(`<span class="text-amber-400">CONSULTORIO (Dequeue):</span> El Dr. atendió a <b>"${pacienteAtendido}"</b> y pasó al Censo General.`);
+            renderCola();
+            renderArray();
+        }
+
+        function renderCola() {
+            const container = document.getElementById('queue-container');
+            if (salaDeEspera.length === 0) {
+                container.innerHTML = '<span class="text-xs text-slate-400 w-full text-center">No hay pacientes esperando</span>';
+                return;
+            }
+            container.innerHTML = salaDeEspera.map((paciente, i) => `
+                <div class="fade-in bg-emerald-50 border border-emerald-200 text-emerald-900 px-3 py-2 rounded-md text-xs font-semibold flex flex-col items-center min-w-[85px]">
+                    <span>${paciente}</span>
+                    <span class="text-[9px] text-emerald-700 mt-1 font-bold">${i === 0 ? 'SIGUIENTE' : `Turno #${i + 1}`}</span>
+                </div>
+            `).join('');
+        }
+
+        // --- 2. LÓGICA DE PILA (ESCRITORIO / EXPEDIENTES) ---
+        function guardarConsulta() {
+            const input = document.getElementById('stack-input');
+            const receta = input.value.trim();
+            if (!receta) return;
+
+            escritorioDoctor.push(receta); // Apilar (Push)
+            input.value = '';
+            registrarLog(`<span class="text-indigo-400">RECETAS (Push):</span> Se colocó la receta/nota <b>"${receta}"</b> en la cima del escritorio.`);
+            renderPila();
+        }
+
+        function archivarConsulta() {
+            if (escritorioDoctor.length === 0) {
+                registrarLog(`<span class="text-rose-400">ALERTA:</span> No hay notas o recetas pendientes en el escritorio.`);
+                return;
+            }
+            const recetaArchivada = escritorioDoctor.pop(); // Desapilar (Pop - LIFO)
+            registrarLog(`<span class="text-indigo-400">RECETAS (Pop):</span> Se archivó la receta más reciente: <b>"${recetaArchivada}"</b>.`);
+            renderPila();
+        }
+
+        function renderPila() {
+            const container = document.getElementById('stack-container');
+            if (escritorioDoctor.length === 0) {
+                container.innerHTML = '<span class="text-xs text-slate-400 w-full text-center my-auto">Sin recetas en escritorio</span>';
+                return;
+            }
+            container.innerHTML = escritorioDoctor.map((item, i) => `
+                <div class="fade-in bg-indigo-50 border border-indigo-200 text-indigo-900 px-3 py-2 rounded-md text-xs font-semibold flex justify-between items-center">
+                    <span>📄 ${item}</span>
+                    <span class="text-[10px] bg-indigo-200 text-indigo-800 px-1.5 py-0.5 rounded font-mono">${i === escritorioDoctor.length - 1 ? 'CIMA (Tope)' : `Nivel ${i + 1}`}</span>
+                </div>
+            `).join('');
+        }
+
+        // --- 3. LÓGICA DE ARRAY (CENSO GENERAL) ---
+        function registrarDirecto() {
+            const input = document.getElementById('array-input');
+            const paciente = input.value.trim();
+            if (!paciente) return;
+
+            censoPacientes.push(paciente);
+            input.value = '';
+            registrarLog(`<span class="text-slate-300">CENSO (Array):</span> Se dio de alta en sistema a <b>"${paciente}"</b>.`);
+            renderArray();
+        }
+
+        function eliminarUltimoRegistro() {
+            if (censoPacientes.length === 0) {
+                registrarLog(`<span class="text-rose-400">ALERTA:</span> El censo general está vacío.`);
+                return;
+            }
+            const borrado = censoPacientes.pop();
+            registrarLog(`<span class="text-slate-300">CENSO (Array):</span> Se eliminó del censo a <b>"${borrado}"</b>.`);
+            renderArray();
+        }
+
+        function renderArray() {
+            const container = document.getElementById('array-container');
+            if (censoPacientes.length === 0) {
+                container.innerHTML = '<span class="text-xs text-slate-400 w-full text-center">Censo vacío</span>';
+                return;
+            }
+            container.innerHTML = censoPacientes.map((item, i) => `
+                <div class="fade-in bg-slate-200 border border-slate-300 px-3 py-2 rounded-md text-xs text-center">
+                    <div class="font-bold text-slate-800">👤 ${item}</div>
+                    <div class="text-[10px] text-slate-500 border-t border-slate-300 mt-1 pt-0.5 font-mono">ID [${i}]</div>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
